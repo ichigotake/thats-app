@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+
+set -e
+
+tmp_dir=`perl -MFile::Temp -e 'print File::Temp::tempdir(CLEANUP => 0)'`
+cd "$tmp_dir"
+target_dir="$OLDPWD"
+app_home="$tmp_dir/thats-app"
+
+git clone git@github.com:ichigotake/thats-app
+cd "$app_home"
+
+cp -r "$target_dir" ./
+
+git add .
+git commit -m "Add `basename "/$target_dir"`" > /dev/null
+git log --stat
+git push heroku master:master
+
+rm -rf "$tmp_dir"
+
