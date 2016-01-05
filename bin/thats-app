@@ -2,20 +2,22 @@
 
 set -e
 
+target_repo="$THATS_APP_TARGET"
+
 tmp_dir=`perl -MFile::Temp -e 'print File::Temp::tempdir(CLEANUP => 0)'`
 cd "$tmp_dir"
 target_dir="$OLDPWD"
-app_home="$tmp_dir/thats-app"
+app_home="$tmp_dir/`basename $target_repo`"
 
-git clone git@github.com:ichigotake/thats-app
+git clone "$target_repo"
 cd "$app_home"
 
 cp -r "$target_dir" ./
 
 git add .
-git commit -m "Add `basename "/$target_dir"`" > /dev/null
+git commit -m "Add /`basename "$target_dir"`" > /dev/null
 git log --stat
-git push heroku master:master
+git push
 
 rm -rf "$tmp_dir"
 
