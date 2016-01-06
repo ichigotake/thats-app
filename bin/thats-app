@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 set -e
 
@@ -7,17 +7,18 @@ target_repo="$THATS_APP_TARGET"
 tmp_dir=`perl -MFile::Temp -e 'print File::Temp::tempdir(CLEANUP => 0)'`
 cd "$tmp_dir"
 target_dir="$OLDPWD"
-app_home="$tmp_dir/`basename $target_repo`"
+app_home="$tmp_dir/`basename $target_repo | sed -e s/\.git$//`"
+echo "APP" $app_home
 
 git clone "$target_repo"
 cd "$app_home"
 
+rm -rf `basename "$target_dir"`
 cp -r "$target_dir" ./
-
+rm -rf `basename "$target_dir"`/.git
 git add .
 git commit -m "Add /`basename "$target_dir"`" > /dev/null
-git log --stat
-git push
+git push origin master
 
 rm -rf "$tmp_dir"
 
